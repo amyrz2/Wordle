@@ -9,6 +9,10 @@ import atexit
 import math
 import time
 import tkinter
+from tkinter import *
+from tkinter.filedialog import askopenfilename
+import os
+
 
 # Constants
 
@@ -150,6 +154,64 @@ class WordleGWindow:
             root.mainloop()
 
         root = tkinter.Tk()
+
+        # global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
+        # CORRECT_COLOR = "#66BB66"       # Light green for correct letters
+        # PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
+        # MISSING_COLOR = "#999999"       # Gray for letters that don't appear
+
+
+        # def update():
+        #     root.mainloop()
+
+        # def Lang():
+
+        #     root = tkinter.Tk()
+        #     def yes():
+        #         #do stuff if the user says yes
+        #         global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
+        #         CORRECT_COLOR = "#66BB66"       # Light green for correct letters
+        #         PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
+        #         MISSING_COLOR = "#999999"       # Gray for letters that don't appear
+        #         root.destroy()
+
+        #     def no():
+        #         #do stuff if the user says no
+        #         global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
+        #         CORRECT_COLOR = "#800080"       # Purple for correct letters
+        #         PRESENT_COLOR = "#0000ff"       # Blue for misplaced letters
+        #         MISSING_COLOR = "#CCAC93"       # Brown for letters that don't appear
+        #         root.destroy()
+
+        #     label = tkinter.Label(root, text="what color do you want?")
+
+        #     bYes = tkinter.Button(root, text="Correct = Green / Right letter wrong place = Yellow / Not inthe word = Gray", command=yes)
+        #     bNo = tkinter.Button(root, text="Correct = Purple / Right letter wrong place = Blue / Not in the word = Brown", command=no)
+
+        #     for el in [label, bYes, bNo]:
+        #         el.pack()
+        
+        # def NewFile():
+        #     print("New File!")
+        # def OpenFile():
+        #     root.refresh()
+        # def About():  
+        #     print("This is a simple example of a menu")
+            
+        # menu = Menu(root)
+        # root.config(menu=menu)
+        # filemenu = Menu(menu)
+        # menu.add_cascade(label="File", menu=filemenu)
+        # filemenu.add_command(label="Languages", command=Lang)
+        # filemenu.add_command(label="Open...", command=update)
+        # filemenu.add_separator()
+        # filemenu.add_command(label="Exit", command=root.quit)
+
+        # # helpmenu = Menu(menu)
+        # # menu.add_cascade(label="Help", menu=helpmenu)
+        # # helpmenu.add_command(label="About...", command=About)
+
+
         root.title("Wordle")
         root.protocol("WM_DELETE_WINDOW", delete_window)
         self._root = root

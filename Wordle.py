@@ -2,19 +2,34 @@
 
 import random
 import tkinter as tk
+from tkinter import *
+from tkinter.filedialog import askopenfilename
 
 
 
-from WordleDictionary import FIVE_LETTER_WORDS
+from WordleDictionary import ENG_FIVE_LETTER_WORDS, JAP_FIVE_LETTER_WORDS
 from WordleGraphics import WordleGWindow, N_COLS, N_ROWS
 
 
+# 
+# # Define the input and output file names
+# input_file_name = 'words.txt'
+# output_file_name = 'output.txt'
 
+# # Open the input and output files
+# with open(input_file_name, 'r') as input_file, open(output_file_name, 'w') as output_file:
+#     # Read each line from the input file
+#     for line in input_file:
+#         # Add quotation marks, a comma, and a newline to the line
+#         quoted_line = f'"{line.strip()}",\n'
+#         output_file.write(quoted_line)
 
+# print(f'Lines from {input_file_name} have been quoted and saved to {output_file_name}')
 
-
+global Word
 
 def wordle():
+
 
     # this is a pop up window
     root = tk.Tk()
@@ -23,6 +38,9 @@ def wordle():
     CORRECT_COLOR = "#66BB66"       # Light green for correct letters
     PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
     MISSING_COLOR = "#999999"       # Gray for letters that don't appear
+
+    global Lang
+    Lang = ENG_FIVE_LETTER_WORDS
 
 
     def yes():
@@ -55,11 +73,46 @@ def wordle():
     modal("What color scheme would you like?")
 
 
+    root1 = tk.Tk()
+
+    def ENG():
+        #do stuff if the user says yes
+        global Lang
+        Lang = ENG_FIVE_LETTER_WORDS
+        root1.destroy()
+        # Randomly choose the Wordle from the dictionary
+        global Word
+        Word = random.choice(Lang).upper()
+        print(Word) # For debugging
+
+    def JAP():
+        #do stuff if the user says no
+        global Lang
+        Lang = JAP_FIVE_LETTER_WORDS
+        root1.destroy()
+        # Randomly choose the Wordle from the dictionary
+        global Word
+        Word = random.choice(Lang).upper()
+        print(Word) # For debugging
+    
+
+    def modal1(question):
+
+        label = tk.Label(root1, text=question)
+
+        bYes = tk.Button(root1, text="English ", command=ENG)
+        bNo = tk.Button(root1, text="Japanese", command=JAP)
+
+        for el in [label, bYes, bNo]:
+            el.pack()
+
+    modal1("What langage would you like to play in?")
+
+
     # Initialize global row variable
     global row
     row = 0
 
-    
     def enter_action(s):
         global row
         row = row
@@ -76,7 +129,7 @@ def wordle():
                 gw.set_square_color(WordleGWindow.get_current_row(gw), x, CORRECT_COLOR)
             gw.show_message("Winner winner chicken dinner!")
         else: # Player didn't perfectly guess the Wordle
-            if guessed_word.lower() in FIVE_LETTER_WORDS: # If guessed word is a valid word
+            if guessed_word.lower() in Lang: # If guessed word is a valid word
                 while col < N_COLS : # Iterate through columns of guessed word
                     if guessed_word[col] == Word[col]: # If current column's letter in guessed word equals current column's letter in the Wordle
                         gw.set_square_color(row,col,color=CORRECT_COLOR)
@@ -112,9 +165,6 @@ def wordle():
     # def pick_colors(s):
         
 
-    # Randomly choose the Wordle from the dictionary
-    Word = random.choice(FIVE_LETTER_WORDS).upper()
-    print(Word) # For debugging
 
     gw = WordleGWindow()
     
@@ -125,6 +175,7 @@ def wordle():
 
 if __name__ == "__main__":
     wordle()
+
 
 
     ## add anoyherchecker for hte key action

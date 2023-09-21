@@ -2,9 +2,7 @@
 
 import random
 import tkinter as tk
-from tkinter import *
-# from tkinter import simpledialog 
-from tkinter.ttk import *
+
 
 
 from WordleDictionary import FIVE_LETTER_WORDS
@@ -41,20 +39,20 @@ def wordle():
         CORRECT_COLOR = "#800080"       # Purple for correct letters
         PRESENT_COLOR = "#0000ff"       # Blue for misplaced letters
         MISSING_COLOR = "#CCAC93"       # Brown for letters that don't appear
-        root.destroy()
+        root.destroy() 
+    
 
     def modal(question):
 
         label = tk.Label(root, text=question)
 
         bYes = tk.Button(root, text="Correct = Green / Right letter wrong place = Yellow / Not inthe word = Gray", command=yes)
-        bNo = tk.Button(root, text="Correct = Purple / Right letter wrong place = blue / Not in the word = Brown", command=no)
+        bNo = tk.Button(root, text="Correct = Purple / Right letter wrong place = Blue / Not in the word = Brown", command=no)
 
         for el in [label, bYes, bNo]:
             el.pack()
 
     modal("What color scheme would you like?")
-
 
 
     # Initialize global row variable
@@ -82,12 +80,15 @@ def wordle():
                 while col < N_COLS : # Iterate through columns of guessed word
                     if guessed_word[col] == Word[col]: # If current column's letter in guessed word equals current column's letter in the Wordle
                         gw.set_square_color(row,col,color=CORRECT_COLOR)
+                        gw.set_key_color(guessed_word[col],color=CORRECT_COLOR)
                         print("\"" + guessed_word[col] + "\" is correct")
                     elif guessed_word[col] in Word: # If current column's letter in guessed word is present somewhere in the Wordle
                         gw.set_square_color(row,col,color=PRESENT_COLOR)
+                        gw.set_key_color(guessed_word[col],color=PRESENT_COLOR)
                         print("\"" + guessed_word[col] + "\" is somwhere in \"" + Word + "\"")
                     else: # Letter in guessed word is neither correct nor present in the Wordle
                         gw.set_square_color(row,col,color=MISSING_COLOR)
+                        gw.set_key_color(guessed_word[col],color=MISSING_COLOR)
                         print("\"" + guessed_word[col] + "\" is not found in \"" + Word + "\"")
                     
                     col += 1 # Increment column number

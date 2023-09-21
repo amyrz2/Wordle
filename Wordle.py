@@ -1,17 +1,66 @@
 # File: Wordle.py
 
 import random
+import tkinter as tk
+from tkinter import *
+# from tkinter import simpledialog 
+from tkinter.ttk import *
+
 
 from WordleDictionary import FIVE_LETTER_WORDS
-from WordleGraphics import WordleGWindow, N_COLS, N_ROWS,CORRECT_COLOR,PRESENT_COLOR,MISSING_COLOR
+from WordleGraphics import WordleGWindow, N_COLS, N_ROWS
+
+
+
+
 
 
 
 def wordle():
 
+    # this is a pop up window
+    root = tk.Tk()
+
+    global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
+    CORRECT_COLOR = "#66BB66"       # Light green for correct letters
+    PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
+    MISSING_COLOR = "#999999"       # Gray for letters that don't appear
+
+
+    def yes():
+        #do stuff if the user says yes
+        global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
+        CORRECT_COLOR = "#66BB66"       # Light green for correct letters
+        PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
+        MISSING_COLOR = "#999999"       # Gray for letters that don't appear
+        root.destroy()
+
+    def no():
+        #do stuff if the user says no
+        global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
+        CORRECT_COLOR = "#800080"       # Purple for correct letters
+        PRESENT_COLOR = "#0000ff"       # Blue for misplaced letters
+        MISSING_COLOR = "#CCAC93"       # Brown for letters that don't appear
+        root.destroy()
+
+    def modal(question):
+
+        label = tk.Label(root, text=question)
+
+        bYes = tk.Button(root, text="Correct = Green / Right letter wrong place = Yellow / Not inthe word = Gray", command=yes)
+        bNo = tk.Button(root, text="Correct = Purple / Right letter wrong place = blue / Not in the word = Brown", command=no)
+
+        for el in [label, bYes, bNo]:
+            el.pack()
+
+    modal("What color scheme would you like?")
+
+
+
     # Initialize global row variable
     global row
     row = 0
+
     
     def enter_action(s):
         global row
@@ -57,6 +106,10 @@ def wordle():
                 # Row will stay the same here so that the player can backspace and enter a new word
         
     
+        
+    # #color change
+    # def pick_colors(s):
+        
 
     # Randomly choose the Wordle from the dictionary
     Word = random.choice(FIVE_LETTER_WORDS).upper()

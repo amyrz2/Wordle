@@ -12,6 +12,8 @@ import tkinter
 from tkinter import *
 from tkinter.filedialog import askopenfilename
 import os
+import random
+from WordleDictionary import ENG_FIVE_LETTER_WORDS, JAP_FIVE_LETTER_WORDS
 
 
 # Constants
@@ -19,9 +21,11 @@ import os
 N_ROWS = 6			# Number of rows
 N_COLS = 5			# Number of columns
 
-# CORRECT_COLOR = "#66BB66"       # Light green for correct letters
-# PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
-# MISSING_COLOR = "#999999"       # Gray for letters that don't appear
+# Lists for colors where each index in the list is a different color scheme
+CORRECT_COLORS = ["#66BB66", "#800080"] # Green, Purple
+PRESENT_COLORS = ["#CCBB66", "#0000FF"] # Yellow, Blue
+MISSING_COLORS = ["#999999", "#CCAC93"] # Gray, Brown
+
 UNKNOWN_COLOR = "#FFFFFF"       # Undetermined letters are white
 KEY_COLOR = "#DDDDDD"           # Keys are colored light gray
 
@@ -51,6 +55,8 @@ KEY_LABELS = [
     [ "ENTER", "Z", "X", "C", "V", "B", "N", "M", "DELETE" ]
 ]
 
+ALPHABET = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X", "C", "V", "B", "N", "M"]
+
 CLICK_MAX_DISTANCE = 2
 CLICK_MAX_DELAY = 0.5
 
@@ -67,6 +73,49 @@ class WordleGWindow:
 
     def __init__(self):
         """Creates the Wordle window."""
+
+        # ADDED FUNCTIONS ----------------------------------------------------------------
+
+        # Checks the color of every square and key and changes it to match the current color scheme
+        def refreshColors():
+            # Iterate through squares
+            for x in range(0, N_ROWS):
+                for y in range(0, N_COLS):
+                    color = self.get_square_color(x,y)
+                    if color in CORRECT_COLORS:
+                        self.set_square_color(x, y, self._CORRECT_COLOR)
+                    elif color in PRESENT_COLORS:
+                        self.set_square_color(x, y, self._PRESENT_COLOR)
+                    elif color in MISSING_COLORS:
+                        self.set_square_color(x, y, self._MISSING_COLOR)
+
+            # Iterate through keys
+            for letter in ALPHABET:
+                color = self.get_key_color(letter)
+                if color in CORRECT_COLORS:
+                    self.set_key_color(letter, self._CORRECT_COLOR)
+                elif color in PRESENT_COLORS:
+                    self.set_key_color(letter, self._PRESENT_COLOR)
+                elif color in MISSING_COLORS:
+                    self.set_key_color(letter, self._MISSING_COLOR)
+
+
+        # Changes color scheme to Green/Yellow/Gray
+        def setColorSchemeGreen():
+            self._CORRECT_COLOR = CORRECT_COLORS[0]
+            self._PRESENT_COLOR = PRESENT_COLORS[0]     
+            self._MISSING_COLOR = MISSING_COLORS[0]
+            refreshColors()
+
+        # Changes color scheme to Purple/Blue/Brown
+        def setColorSchemePurple():
+            self._CORRECT_COLOR = CORRECT_COLORS[1]
+            self._PRESENT_COLOR = PRESENT_COLORS[1]      
+            self._MISSING_COLOR = MISSING_COLORS[1]
+            refreshColors()
+
+        #-----------------------------------------------------------------------------------
+        
 
         def create_grid():
             return [
@@ -100,29 +149,29 @@ class WordleGWindow:
                                  MESSAGE_Y)
 
         def key_action(tke):
-            if isinstance(tke, str):
-                ch = tke.upper()
-            else:
-                ch = tke.char.upper()
-            if ch == "\007" or ch == "\177" or ch == "DELETE" or ch == "\b":
-                self.show_message("")
-                if self._row < N_ROWS and self._col > 0:
-                    self._col -= 1
-                    sq = self._grid[self._row][self._col]
-                    sq.set_letter(" ")
-            elif ch == "\r" or ch == "\n" or ch == "ENTER":
-                self.show_message("")
-                s = ""
-                for col in range(N_COLS):
-                    s += self._grid[self._row][col].get_letter();
-                for fn in self._enter_listeners:
-                    fn(s)
-            elif ch.isalpha():
-                self.show_message("")
-                if self._row < N_ROWS and self._col < N_COLS:
-                    sq = self._grid[self._row][self._col]
-                    sq.set_letter(ch)
-                    self._col += 1
+            if self._GAME_OVER == False: # Prevents ALL input if game is over
+                if isinstance(tke, str):
+                    ch = tke.upper()
+                else:
+                    ch = tke.char.upper()
+                if ch == "\007" or ch == "\177" or ch == "DELETE" or ch == "\b":
+                    if self._row < N_ROWS and self._col > 0:
+                        self._col -= 1
+                        sq = self._grid[self._row][self._col]
+                        sq.set_letter(" ")
+                elif ch == "\r" or ch == "\n" or ch == "ENTER":
+                    self.show_message("")
+                    s = ""
+                    for col in range(N_COLS):
+                        s += self._grid[self._row][col].get_letter();
+                    for fn in self._enter_listeners:
+                        fn(s)
+                elif ch.isalpha():
+                    self.show_message("")
+                    if self._row < N_ROWS and self._col < N_COLS:
+                        sq = self._grid[self._row][self._col]
+                        sq.set_letter(ch)
+                        self._col += 1
 
         def press_action(tke):
             self._down_x = tke.x
@@ -154,63 +203,37 @@ class WordleGWindow:
             root.mainloop()
 
         root = tkinter.Tk()
+        root.title("Wordle")
+        root.protocol("WM_DELETE_WINDOW", delete_window)
 
-        # global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
-        # CORRECT_COLOR = "#66BB66"       # Light green for correct letters
-        # PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
-        # MISSING_COLOR = "#999999"       # Gray for letters that don't appear
-
-
-        # def update():
-        #     root.mainloop()
-
-        # def Lang():
-
-        #     root = tkinter.Tk()
-        #     def yes():
-        #         #do stuff if the user says yes
-        #         global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
-        #         CORRECT_COLOR = "#66BB66"       # Light green for correct letters
-        #         PRESENT_COLOR = "#CCBB66"       # Brownish yellow for misplaced letters
-        #         MISSING_COLOR = "#999999"       # Gray for letters that don't appear
-        #         root.destroy()
-
-        #     def no():
-        #         #do stuff if the user says no
-        #         global CORRECT_COLOR, PRESENT_COLOR, MISSING_COLOR
-        #         CORRECT_COLOR = "#800080"       # Purple for correct letters
-        #         PRESENT_COLOR = "#0000ff"       # Blue for misplaced letters
-        #         MISSING_COLOR = "#CCAC93"       # Brown for letters that don't appear
-        #         root.destroy()
-
-        #     label = tkinter.Label(root, text="what color do you want?")
-
-        #     bYes = tkinter.Button(root, text="Correct = Green / Right letter wrong place = Yellow / Not inthe word = Gray", command=yes)
-        #     bNo = tkinter.Button(root, text="Correct = Purple / Right letter wrong place = Blue / Not in the word = Brown", command=no)
-
-        #     for el in [label, bYes, bNo]:
-        #         el.pack()
+         # Adds a menu bar where we can store settings
+        menubar = Menu(root)
+        root.config(menu=menubar)
+        settings_menu = Menu(menubar, tearoff=False) # tearoff=False gets rid of drop down dotted lines
         
-        # def NewFile():
-        #     print("New File!")
-        # def OpenFile():
-        #     root.refresh()
-        # def About():  
-        #     print("This is a simple example of a menu")
-            
-        # menu = Menu(root)
-        # root.config(menu=menu)
-        # filemenu = Menu(menu)
-        # menu.add_cascade(label="File", menu=filemenu)
-        # filemenu.add_command(label="Languages", command=Lang)
-        # filemenu.add_command(label="Open...", command=update)
-        # filemenu.add_separator()
-        # filemenu.add_command(label="Exit", command=root.quit)
+        # Add menu dropdown
+        menubar.add_cascade(
+            label="Game Settings",
+            menu=settings_menu
+        )
 
-        # # helpmenu = Menu(menu)
-        # # menu.add_cascade(label="Help", menu=helpmenu)
-        # # helpmenu.add_command(label="About...", command=About)
+        # Adds a submenu for selectable settings
+        sub_menu = Menu(settings_menu, tearoff=0)
 
+        settings_menu.add_cascade(
+            label="Color Preference",
+            menu=sub_menu
+        )
+
+        # Submenu options
+        sub_menu.add_command(
+            label='Classic', command=setColorSchemeGreen
+        )
+        sub_menu.add_command(
+            label='The Nathaniel Special', command=setColorSchemePurple
+        )
+
+        #settings_menu.add_separator() # Optional menu separator
 
         root.title("Wordle")
         root.protocol("WM_DELETE_WINDOW", delete_window)
@@ -231,6 +254,18 @@ class WordleGWindow:
         root.bind("<ButtonRelease-1>", release_action)
         self._row = 0
         self._col = 0
+
+        # Added new attributes below, replacing some that were declared outside of the WordleGWindow class (like square colors). 
+        # These can now be accessed and changed while the window is active, not just in the setup. -edemaere
+
+        # A boolean for determining game state
+        self._GAME_OVER = False
+
+        # Default square colors
+        self._CORRECT_COLOR = CORRECT_COLORS[0]
+        self._PRESENT_COLOR = PRESENT_COLORS[0]
+        self._MISSING_COLOR = MISSING_COLORS[0]
+
         atexit.register(start_event_loop)
 
     def get_square_letter(self, row, col):
